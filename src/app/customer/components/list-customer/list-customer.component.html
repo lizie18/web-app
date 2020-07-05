@@ -1,0 +1,25 @@
+<div class="card bg-light mb-3">
+  <div class="card-header">Lista de clientes</div>
+  <div class="card-body">
+    <div class="bg-white p-2">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Cliente</th>
+            <th scope="col">Edad</th>
+            <th scope="col">Fec. Nacimiento</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let customer of (allCustomers$ | async).customers; let i = index">
+            <th scope="row">{{i + 1}}</th>
+            <td>{{customer.name }} {{customer.lastname}}</td>
+            <td>{{customer.age}}</td>
+            <td>@mdo</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
