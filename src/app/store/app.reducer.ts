@@ -1,13 +1,11 @@
 import { ActionReducerMap } from '@ngrx/store';
-import * as reducers from './reducers';
+import { routerReducer } from '@ngrx/router-store';
 
 
-export interface AppState {
-  customers: reducers.CustomersState;
-}
+export interface AppState {}
 
 
 
 export const appReducers: ActionReducerMap<AppState> = {
-  customers: reducers.customersReducer,
-}
+  router: routerReducer
+};

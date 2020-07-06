@@ -1,46 +1,30 @@
-import * as customerActions from '../actions/customers.actions';
-import {EntityState, EntityAdapter, createEntityAdapter} from '@ngrx/entity';
-import { Customer } from 'src/app/core/models/customer.interface';
+import { EntityState, createEntityAdapter } from '@ngrx/entity';
+import { Customer, compareCustomersName } from 'src/app/core/models/customer.interface';
 import { createReducer, on } from '@ngrx/store';
+import { CustomerActions } from '../actions/action-types';
 
-export interface CustomerState extends EntityState<Customer> {
-  error: any;
+export interface CustomersState extends EntityState<Customer> {
+  allCustomersLoaded: boolean;
 }
 
-export const adapter: EntityAdapter<Customer> = createEntityAdapter<Customer>();
+export const adapter = createEntityAdapter<Customer>({
+  sortComparer: compareCustomersName
+});
 
-export const CustomersInitState: CustomerState = adapter.getInitialState({
-  error: undefined
-})
+export const initialCustomersState = adapter.getInitialState({
+  allCustomersLoaded: false
+});
 
-export interface CustomersState {
-  customers: Customer[];
-  loaded: boolean;
-  loading: boolean;
-  error: any;
-}
-const _customersReducer = createReducer(
-  CustomersInitState,
-  on(customerActions.loadCustomers, (state) => ({ ...state, loading: true })),
+export const customersReducer = createReducer(
+  initialCustomersState,
 
-  on(customerActions.loadCustomersSuccess, (state, { customers }) => ({
-    ...state,
-    loading: false,
-    loaded: true,
-    customers: [...customers],
-  })),
+  on(CustomerActions.loadAllCustomersSucces,
+    (state, action) => adapter.setAll(action.customers, {...state, allCustomersLoaded: true})
+  ),
 
-  on(customerActions.loadCustomersError, (state, { error }) => ({
-    ...state,
-    loading: false,
-    loaded: false,
-    error: { error },
-  }))
-
-
-
+  on(CustomerActions.createCustomer, (state, action) => {
+      return adapter.addOne(action.customer, state);
+  })
 );
 
-export function customersReducer(state, action) {
-  return _customersReducer(state, action);
-}
+export const { selectAll, selectIds } = adapter.getSelectors();

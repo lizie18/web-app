@@ -4,21 +4,29 @@
     <form [formGroup]="customerForm" (ngSubmit)="sendCustomerForm()">
       <div class="form-group">
         <label for="name">Nombre</label>
-        <input id="name" formControlName="name" class="form-control">
+        <input id="name" formControlName="name" class="form-control" [class.is-invalid]="fieldIsInvalid(name)" [class.is-valid]="fieldIsValid(name)">
+        <div class="invalid-feedback" *ngIf="fieldIsInvalid(name)">
+          <p *ngIf="fieldHasError(name, 'required')">Este campo es requerido</p>
+          <p *ngIf="fieldHasError(name, 'minlength')">El campo debe tener mínimo 3 caracteres</p>
+        </div>
       </div>
       <div class="form-group">
         <label for="lastname">Apellido</label>
-        <input id="lastname" formControlName="lastname" class="form-control">
-      </div>
-      <div class="form-group">
-        <label for="age">Edad</label>
-        <input id="age" formControlName="age" class="form-control">
+        <input id="lastname" formControlName="lastname" class="form-control" [class.is-invalid]="fieldIsInvalid(lastname)" [class.is-valid]="fieldIsValid(lastname)">
+        <div class="invalid-feedback" *ngIf="fieldIsInvalid(lastname)">
+          <p *ngIf="fieldHasError(lastname, 'required')">Este campo es requerido</p>
+          <p *ngIf="fieldHasError(lastname, 'minlength')">El campo debe tener mínimo 3 caracteres</p>
+        </div>
       </div>
       <div class="form-group">
         <label for="dateOfBirth">Fecha de nacimiento</label>
-        <input id="dateOfBirth" formControlName="dateOfBirth" class="form-control">
+        <input id="dateOfBirth" matInput mask="00/00/0000" formControlName="dateOfBirth" class="form-control" [class.is-invalid]="fieldIsInvalid(dateOfBirth)" [class.is-valid]="fieldIsValid(dateOfBirth)" placeholder="__/__/____">
+        <div class="invalid-feedback" *ngIf="fieldIsInvalid(dateOfBirth)">
+          <p *ngIf="fieldHasError(dateOfBirth, 'required')">Este campo es requerido</p>
+          <p *ngIf="fieldHasError(dateOfBirth, 'invalid_date')">Ingresar una fecha válida</p>
+        </div>
       </div>
-      <button type="submit" class="btn btn-success">Agregar cliente</button>
+      <button type="submit" [disabled]="customerForm.invalid" class="btn btn-success">Agregar cliente</button>
     </form>
   </div>
 </div>

@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Actions, createEffect, ofType, Effect } from '@ngrx/effects';
-import * as customersActions from '../actions/customers.actions';
-import { tap, mergeMap, map, catchError, switchMap } from 'rxjs/operators';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import * as CustomersActions from '../actions/customers.actions';
+import { map, concatMap } from 'rxjs/operators';
 import { CustomerService } from '../../core/services/customer.service';
+import { CustomerActions } from '../actions/action-types';
 
 @Injectable()
 export class CustomersEffects {
@@ -11,11 +12,20 @@ export class CustomersEffects {
     private customerService: CustomerService
   ) {}
 
-  @Effect() loadCustomers$ = this.actions$.pipe(
-    ofType(customersActions.loadCustomers),
-    switchMap(() => this.customerService.getAllCustomers()),
-    map((customers) => {
-      return customersActions.loadCustomersSuccess({ customers });
-    })
+  loadCustomers$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(CustomersActions.loadAllCustomers),
+      concatMap(() => this.customerService.getAllCustomers()),
+      map((customers) => CustomersActions.loadAllCustomersSucces({ customers }))
+    )
+  );
+
+  addCustomer$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(CustomerActions.createCustomer),
+        concatMap((action) => this.customerService.createCustomer(action.customer))
+      ),
+    { dispatch: false }
   );
 }
